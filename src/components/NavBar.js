@@ -22,6 +22,7 @@ export default function NavBar() {
       <Nav className="mr-auto">
         <Nav.Link href="./Browse">Browse</Nav.Link>
         <Nav.Link href="./Create">Create</Nav.Link>
+        <Nav.Link href="./Match">Match</Nav.Link>
         <Nav.Link href="./Dashboard">Profile</Nav.Link>
       </Nav>
       <Form inline>
