@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert, Container } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useHistory } from "react-router-dom";
+import { db } from "../firebase.js";
 
 const Signup = () => {
   const emailRef = useRef();
@@ -13,9 +14,37 @@ const Signup = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const users = db.collection("users");
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    const capitalize = (s) => {
+      if (typeof s !== "string") return "";
+      return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    };
+
+    const fnameTest = /^[a-z ,.'-]+$/i.test(firstNameRef.current.value);
+    const lnameTest = /^[a-z ,.'-]+$/i.test(lastNameRef.current.value);
+    if (firstNameRef.current.value && fnameTest === true) {
+      firstNameRef.current.value = capitalize(firstNameRef.current.value);
+      console.log(firstNameRef.current.value);
+    } else {
+      return setError("Avoid special characters in name fields.");
+    }
+
+    if (lastNameRef.current.value && lnameTest === true) {
+      lastNameRef.current.value = capitalize(lastNameRef.current.value);
+      console.log(lastNameRef.current.value);
+    } else {
+      return setError("Avoid special characters in name fields.");
+    }
+
+    const res = /.+@((?:go|cs)\.)?olemiss\.edu$/.test(emailRef.current.value);
+    // const res = /.+@(go\.)?olemiss\.edu$/.test(emailRef.current.value);
+    if (!res) {
+      return setError("Email not university format!");
+    }
 
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
       return setError("Passwords do no match");
@@ -31,15 +60,43 @@ const Signup = () => {
               firstNameRef.current.value + " " + lastNameRef.current.value,
           });
         })
+        .then(() => {
+          users
+            .add({
+              email: emailRef.current.value,
+              isAdmin: false,
+              name:
+                firstNameRef.current.value + " " + lastNameRef.current.value,
+            })
+            .then((doc) => {
+              console.log("User was added");
+            })
+            .catch((error) => {
+              console.error("Error adding document: ", error);
+            });
+        })
         .catch(function (error) {
           console.log(error);
         });
+      // users
+      //   .add({
+      //     email: currentUser.email,
+      //     isAdmin: false,
+      //     name: currentUser.displayName,
+      //   })
+      //   .then((doc) => {
+      //     console.log("User was added");
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error adding document: ", error);
+      //   });
       history.push("/browse");
     } catch {
       setError("Failed to create an account");
     }
     setLoading(false);
   }
+
   return (
     <Container>
       <Card>

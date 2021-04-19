@@ -9,13 +9,13 @@ export default function Browse() {
   const [arrayItems, setArray] = useState([]);
   const [show, setShow] = useState([]);
   const [didLoad, setDidLoad] = useState(false);
-  const tutoringReqRef = db.collection("tutoringReq");
+  const tutorRef = db.collection("tutor");
   const match = db.collection("match");
   const { currentUser } = useAuth();
 
   useEffect(() => {
     if (!didLoad) {
-      tutoringReqRef.get().then((snap) => {
+      tutorRef.get().then((snap) => {
         snap.forEach((doc) => {
           let docData;
           let id = doc.id;
@@ -30,7 +30,7 @@ export default function Browse() {
 
       setDidLoad(true);
     }
-  }, [currentUser.displayName, didLoad, tutoringReqRef]);
+  }, [currentUser.displayName, didLoad, tutorRef]);
 
   const updateInput = async (input) => {
     let filtered = JSON.parse(JSON.stringify(arrayItems));
@@ -50,7 +50,7 @@ export default function Browse() {
       array.splice(i, 1);
       setShow(array);
     }
-    tutoringReqRef
+    tutorRef
       .doc(id)
       .delete()
       .then(() => {
@@ -84,7 +84,7 @@ export default function Browse() {
     <div className="mx-auto">
       <Card>
         <Card.Header>
-          <h3 className="text-center">Request Listings</h3>
+          <h3 className="text-center">Available Tutors</h3>
         </Card.Header>
         <Card.Body>
           <SearchBar input={input} onChange={updateInput} />

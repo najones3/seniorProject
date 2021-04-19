@@ -3,14 +3,18 @@ import Signup from "./Signup";
 // import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContext";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Dashboard from "./Dashboard";
+import Profile from "./Profile";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
+import AdminRoute from "./AdminRoute";
 import ForgotPassword from "./ForgotPassword";
 import Browse from "./Browse";
 import NavBar from "./NavBar";
 import Create from "./Create";
 import Match from "./Match";
+import Tutors from "./Tutors";
+import GrantAccess from "./GrantAccess";
+import ManageListings from "./ManageListings";
 
 function App() {
   return (
@@ -23,13 +27,17 @@ function App() {
         <Router>
           <NavBar component={NavBar} />
           <Switch>
-            <PrivateRoute exact path="/" component={Dashboard} />
+            <PrivateRoute exact path="/" component={Browse} />
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
             <Route path="/forgot-password" component={ForgotPassword} />
-            <Route path="/Create" component={Create} />
-            <Route path="/browse" component={Browse} />
-            <Route path="/match" component={Match} />
+            <PrivateRoute path="/Create" component={Create} />
+            <PrivateRoute path="/browse" component={Browse} />
+            <PrivateRoute path="/match" component={Match} />
+            <PrivateRoute path="/profile" component={Profile} />
+            <PrivateRoute path="/tutors" component={Tutors} />
+            <AdminRoute path="/grant-access" component={GrantAccess} />
+            <AdminRoute path="/manage" component={ManageListings} />
           </Switch>
         </Router>
       </div>
